@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kōhi — Mi lugar en la lista</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <a class="brand brand-sm" href="index.html">Kōhi</a>
+
+    <div class="card">
+      <p class="loading" id="loading">Cargando tu lugar en la lista…</p>
+
+      <div id="panel" style="display: none;">
+        <div style="text-align: center;">
+          <p class="kicker">Tu lugar en la cola</p>
+          <h2 id="greeting">Hola</h2>
+
+          <p class="queue-figure">
+            Eres el <span class="n" id="position">#—</span> de <span id="total">—</span>
+          </p>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-legend">
+            <span id="ahead">—</span>
+            <span id="behind">—</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-label">Tu pase de apertura</p>
+          <div class="qr">
+            <span class="qr-code" id="qrCode">QR-————</span>
+            <span class="qr-note">Preséntalo en barra</span>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <button class="logout" id="logoutBtn" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <div class="message" id="message" role="alert"></div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const message = document.getElementById('message');
+    const loading = document.getElementById('loading');
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.clear();
+      window.location.href = 'index.html';
+    });
+
+    (async function load() {
+      const token = auth.get();
+      if (!token) {
+        window.location.replace('login.html');
+        return;
+      }
+
+      const { ok, status, data } = await api('/api/me', { token });
+
+      if (!ok) {
+        loading.style.display = 'none';
+        // Token caducado o inválido: fuera y a pedir credenciales de nuevo.
+        if (status === 401) {
+          auth.clear();
+          showMessage(message, 'Tu sesión ha caducado. Redirigiendo al inicio de sesión…');
+          setTimeout(() => window.location.replace('login.html'), 1800);
+          return;
+        }
+        showMessage(message, data.error);
+        return;
+      }
+
+      const { name, position, total } = data;
+
+      document.getElementById('greeting').textContent = `Hola, ${name}`;
+      document.getElementById('position').textContent = `#${position}`;
+      document.getElementById('total').textContent = total;
+
+      const ahead = position - 1;
+      const behind = total - position;
+      document.getElementById('ahead').textContent =
+        ahead === 0 ? 'Nadie por delante' : `${ahead} por delante`;
+      document.getElementById('behind').textContent =
+        behind === 0 ? 'Cierras la lista' : `${behind} por detrás`;
+
+      // La barra mide lo cerca que estás del frente de la cola:
+      // el #1 la llena entera, el último se queda en la fracción mínima.
+      const progress = total > 0 ? ((total - position + 1) / total) * 100 : 0;
+      requestAnimationFrame(() => {
+        document.getElementById('progressFill').style.width = `${progress}%`;
+      });
+
+      // QR ficticio derivado de la posición (la API no expone el id).
+      document.getElementById('qrCode').textContent =
+        `QR-${String(position).padStart(4, '0')}`;
+
+      loading.style.display = 'none';
+      document.getElementById('panel').style.display = 'block';
+    })();
+  </script>
+</body>
+</html>
