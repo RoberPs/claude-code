@@ -1,10 +1,21 @@
 {
-  "name": "claude-code-demo",
+  "name": "mcp_proyect",
   "version": "1.0.0",
-  "description": "Repositorio de pruebas para el curso de Claude Code",
-  "main": "src/index.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "test": "node --test tests/"
+    "start": "node server.js",
+    "db:init": "node init-db.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "license": "MIT"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "playwright": "^1.62.1"
+  }
 }
