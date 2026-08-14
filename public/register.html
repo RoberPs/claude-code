@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kōhi — Unirme a la lista</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <a class="brand brand-sm" href="index.html">Kōhi</a>
+
+    <div class="card">
+      <!-- Formulario -->
+      <div id="formView">
+        <h2>Unirme a la lista</h2>
+        <p class="muted">Te avisaremos antes de la apertura.</p>
+
+        <form id="registerForm" novalidate>
+          <div class="field">
+            <label for="name">Nombre</label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="Tu nombre">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="tu@email.com">
+          </div>
+          <div class="field">
+            <label for="password">Contraseña</label>
+            <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres">
+          </div>
+          <div class="field">
+            <label for="confirm">Confirmar contraseña</label>
+            <input id="confirm" name="confirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña">
+          </div>
+
+          <button class="btn btn-primary" type="submit" id="submitBtn">Reservar mi sitio</button>
+        </form>
+
+        <div class="message" id="message" role="alert"></div>
+
+        <p class="form-footer">¿Ya estás en la lista? <a href="login.html">Inicia sesión</a></p>
+      </div>
+
+      <!-- Confirmación -->
+      <div class="confirmation" id="confirmation">
+        <p class="kicker">Confirmado</p>
+        <h2>¡Estás en la lista!</h2>
+        <p class="muted">Tu posición</p>
+        <p class="position-badge" id="positionBadge">#—</p>
+        <hr class="rule">
+        <p class="muted" id="confirmationDetail"></p>
+        <div class="actions">
+          <a class="btn btn-primary" href="login.html">Entrar a mi panel</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      hideMessage(message);
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      // Validación en cliente. El servidor vuelve a validar de todos modos.
+      if (!name || !email || !password || !confirm) {
+        return showMessage(message, 'Rellena todos los campos.');
+      }
+      if (password.length < 8) {
+        return showMessage(message, 'La contraseña debe tener al menos 8 caracteres.');
+      }
+      if (password !== confirm) {
+        return showMessage(message, 'Las contraseñas no coinciden.');
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Reservando…';
+
+      const { ok, status, data } = await api('/api/register', {
+        method: 'POST',
+        body: { name, email, password },
+      });
+
+      if (ok) {
+        document.getElementById('positionBadge').textContent = `#${data.position}`;
+        document.getElementById('confirmationDetail').textContent =
+          `${data.total} ${data.total === 1 ? 'persona espera' : 'personas esperan'} la apertura. Te escribiremos a ${data.email}.`;
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('confirmation').classList.add('visible');
+        return;
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Reservar mi sitio';
+      showMessage(
+        message,
+        status === 409 ? 'Ese email ya está en la lista. Prueba a iniciar sesión.' : data.error
+      );
+    });
+  </script>
+</body>
+</html>

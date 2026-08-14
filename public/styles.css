@@ -1,0 +1,346 @@
+/* Kōhi — hoja de estilos compartida */
+
+:root {
+  --bg: #0a0a09;
+  --bg-raised: #141312;
+  --border: #2a2724;
+  --text: #ece7dd;
+  --text-dim: #8d857a;
+  --accent: #d9a441;
+  --accent-soft: rgba(217, 164, 65, 0.12);
+  --danger: #d9705f;
+  --success: #7fae83;
+
+  /* Stack mincho (serif japonesa) para títulos, gótica para el cuerpo.
+     Todo del sistema: nada que descargar, funciona sin conexión. */
+  --font-display: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", "Songti SC", Georgia, serif;
+  --font-body: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+/* Trama sutil de fondo: un halo ámbar muy tenue arriba */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(217, 164, 65, 0.07), transparent 70%);
+  pointer-events: none;
+}
+
+main {
+  position: relative;
+  width: 100%;
+  max-width: 27rem;
+}
+
+/* --- Tipografía --- */
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  margin: 0;
+}
+
+.brand-xl {
+  font-size: clamp(3.75rem, 16vw, 6rem);
+  line-height: 1.05;
+  text-indent: 0.22em; /* compensa el letter-spacing final para centrar óptico */
+}
+
+.brand-sm {
+  font-size: 1.4rem;
+  text-indent: 0.22em;
+  text-align: center;
+  display: block;
+  margin-bottom: 2.75rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1.25rem;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.55rem;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.4rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin: 1.5rem 0 0;
+}
+
+.philosophy {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 2;
+  max-width: 24rem;
+  margin: 1.75rem auto 0;
+}
+
+.muted {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+/* Filete decorativo */
+.rule {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent);
+  border: 0;
+  margin: 2.25rem auto;
+  opacity: 0.5;
+}
+
+/* --- Landing --- */
+
+.landing { text-align: center; }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 2.75rem;
+}
+
+/* --- Botones --- */
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s, opacity 0.25s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #14110c;
+  font-weight: 600;
+}
+.btn-primary:hover { background: #e7b862; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* --- Tarjeta / formularios --- */
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2.5rem 2rem;
+}
+
+.field { margin-bottom: 1.25rem; }
+
+label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  background: #0d0c0b;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+input::placeholder { color: #4a453f; }
+
+form .btn { margin-top: 1.75rem; }
+
+.form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.form-footer a { color: var(--accent); text-decoration: none; }
+.form-footer a:hover { text-decoration: underline; }
+
+/* --- Mensajes --- */
+
+.message {
+  display: none;
+  margin-top: 1.25rem;
+  padding: 0.8rem 1rem;
+  border-radius: 2px;
+  font-size: 0.88rem;
+  border-left: 2px solid;
+}
+.message.visible { display: block; }
+.message.error {
+  background: rgba(217, 112, 95, 0.09);
+  border-color: var(--danger);
+  color: #edb0a4;
+}
+.message.success {
+  background: rgba(127, 174, 131, 0.09);
+  border-color: var(--success);
+  color: #a8ccab;
+}
+
+/* --- Confirmación de registro --- */
+
+.confirmation { display: none; text-align: center; }
+.confirmation.visible { display: block; }
+
+.position-badge {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  color: var(--accent);
+  line-height: 1.2;
+  margin: 0.5rem 0 0;
+}
+
+/* --- Dashboard --- */
+
+.queue-figure {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: 0.02em;
+  margin: 0.75rem 0 0.25rem;
+}
+.queue-figure .n { color: var(--accent); }
+
+.progress-track {
+  height: 4px;
+  background: #24211e;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 1.5rem 0 0.6rem;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #a97f2f, var(--accent));
+  border-radius: 2px;
+  transition: width 0.9s ease-out;
+}
+.progress-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.qr {
+  width: 9.5rem;
+  height: 9.5rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  background: #0d0c0b;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  /* Cuadrícula falsa que evoca un QR sin serlo */
+  background-image:
+    linear-gradient(90deg, rgba(217, 164, 65, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(217, 164, 65, 0.08) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.qr-code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.qr-note {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.section {
+  padding-top: 1.75rem;
+  margin-top: 1.75rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.section-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 1rem;
+}
+
+.logout {
+  display: inline-block;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  font-family: var(--font-body);
+}
+.logout:hover { color: var(--accent); }
+
+.loading { text-align: center; color: var(--text-dim); font-size: 0.85rem; }
