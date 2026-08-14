@@ -1,0 +1,10 @@
+{
+  "name": "claude-code-demo",
+  "version": "1.0.0",
+  "description": "Repositorio de pruebas para el curso de Claude Code",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "license": "MIT"
+}
